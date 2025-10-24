@@ -1,6 +1,5 @@
 package Pz9;
 
-// CafeDemo.java - вся система в одном файле
 import java.util.*;
 
 public class CafeDemo {
@@ -18,7 +17,7 @@ public class CafeDemo {
         MenuType jarrowsMenu = new JarrowsMenuType();
         menuSystem.registerNewMenuType("Меню Jarrows", jarrowsMenu);
 
-        // Создаем элементы меню с русскими названиями
+        // Создаем элементы меню с названиями
         MenuItem item1 = new MenuItem("Шоколадный торт", 150, "Нежный шоколадный торт с вишней", "ДЕСЕРТ");
         MenuItem item2 = new MenuItem("Фруктовый микс", 120, "Свежие сезонные фрукты", "МИКС");
         MenuItem item3 = new MenuItem("Тирамису", 180, "Классический итальянский десерт", "ДЕСЕРТ");
