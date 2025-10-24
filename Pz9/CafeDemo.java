@@ -1,87 +1,203 @@
 package Pz9;
 
+// CafeDemo.java - вся система в одном файле
+import java.util.*;
+
 public class CafeDemo {
     public static void main(String[] args) {
-        System.out.println("=== ЗАПУСК СИСТЕМЫ ЗАКАЗОВ КАФЕ ===\n");
-
-        CafeOrderSystem cafeSystem = new CafeOrderSystem();
-
-        MenuItem pasta = new MainCourse("Паста Карбонара", 450, "Спагетти с беконом и соусом");
-        MenuItem steak = new MainCourse("Стейк Рибай", 1200, "Мраморная говядина с овощами");
-        MenuItem caesar = new Salad("Цезарь", 350, "Салат с курицей и соусом цезарь");
-        MenuItem tiramisu = new Dessert("Тирамису", 280, "Итальянский десерт");
-        MenuItem cheesecake = new Dessert("Чизкейк", 320, "Нью-Йоркский чизкейк");
-        MenuItem coffee = new Drink("Капучино", 180, "Кофе с молочной пенкой");
-        MenuItem juice = new Drink("Апельсиновый сок", 150, "Свежевыжатый сок");
-
-        cafeSystem.addMenuItemToMenu("Основное меню", pasta);
-        cafeSystem.addMenuItemToMenu("Основное меню", steak);
-        cafeSystem.addMenuItemToMenu("Основное меню", caesar);
-        cafeSystem.addMenuItemToMenu("Десерты", tiramisu);
-        cafeSystem.addMenuItemToMenu("Десерты", cheesecake);
-        cafeSystem.addMenuItemToMenu("Напитки", coffee);
-        cafeSystem.addMenuItemToMenu("Напитки", juice);
-
-        MenuItem veganSalad = new Salad("Зеленый салат", 250, "Свежие овощи с оливковым маслом");
-        MenuItem fruitSalad = new Dessert("Фруктовый салат", 200, "Свежие сезонные фрукты");
-
-        cafeSystem.addMenuItemToMenu("Веганское меню", veganSalad);
-        cafeSystem.addMenuItemToMenu("Веганское меню", fruitSalad);
-
-        System.out.println("=== ДОСТУПНЫЕ МЕНЮ ===");
-        cafeSystem.displayAllMenus();
-
-        System.out.println("\n=== ПРОЦЕСС ЗАКАЗА ===");
-
-        System.out.println("\n--- Оформление заказа 1 ---");
-        Order order1 = cafeSystem.createNewOrder();
-        order1.addItem(pasta, 1);
-        order1.addItem(tiramisu, 1);
-        order1.addItem(coffee, 2);
-        order1.displayOrder();
-
-        System.out.println("\n--- Оформление заказа 2 ---");
-        Order order2 = cafeSystem.createNewOrder();
-        order2.addItem(veganSalad, 2);
-        order2.addItem(fruitSalad, 1);
-        order2.addItem(juice, 1);
-        order2.displayOrder();
-
-        cafeSystem.displayAllOrders();
-
-        demonstrateExtensibility(cafeSystem);
+        demonstrateMenuSystem();
     }
 
-    private static void demonstrateExtensibility(CafeOrderSystem cafeSystem) {
-        System.out.println("\n=== ДЕМОНСТРАЦИЯ РАСШИРЯЕМОСТИ ===");
+    private static void demonstrateMenuSystem() {
+        System.out.println("=== ДЕМОНСТРАЦИЯ СИСТЕМЫ КАФЕ ===\n");
 
-        MenuType kidsMenu = new AbstractMenuType("Детское меню") {
-            @Override
-            public boolean canAddItem(MenuItem item) {
-                return (item.getType().equals("DESSERT") || item.getType().equals("DRINK"))
-                        && item.getPrice() < 300;
+        // Создаем систему меню
+        MenuSystem menuSystem = new MenuSystem();
+
+        // Регистрируем тип меню
+        MenuType jarrowsMenu = new JarrowsMenuType();
+        menuSystem.registerNewMenuType("Меню Jarrows", jarrowsMenu);
+
+        // Создаем элементы меню с русскими названиями
+        MenuItem item1 = new MenuItem("Шоколадный торт", 150, "Нежный шоколадный торт с вишней", "ДЕСЕРТ");
+        MenuItem item2 = new MenuItem("Фруктовый микс", 120, "Свежие сезонные фрукты", "МИКС");
+        MenuItem item3 = new MenuItem("Тирамису", 180, "Классический итальянский десерт", "ДЕСЕРТ");
+        MenuItem item4 = new MenuItem("Дорогой трюфель", 600, "Элитный шоколадный трюфель", "ДЕСЕРТ");
+        MenuItem item5 = new MenuItem("Стейк", 350, "Говяжий стейк с овощами", "ОСНОВНОЕ");
+
+        // Добавляем элементы в меню
+        System.out.println("Добавление элементов в меню:");
+        menuSystem.addMenuItemToMenu("Меню Jarrows", item1);
+        menuSystem.addMenuItemToMenu("Меню Jarrows", item2);
+        menuSystem.addMenuItemToMenu("Меню Jarrows", item3);
+        menuSystem.addMenuItemToMenu("Меню Jarrows", item4);
+        menuSystem.addMenuItemToMenu("Меню Jarrows", item5);
+
+        System.out.println("\n=== ИТОГОВОЕ МЕНЮ ===");
+        menuSystem.displayMenu("Меню Jarrows");
+
+        // Демонстрация с детским меню
+        System.out.println("\n=== ДЕТСКОЕ МЕНЮ ===");
+        MenuType kidsMenu = new KidsMenuType();
+        menuSystem.registerNewMenuType("Детское меню", kidsMenu);
+
+        MenuItem kidsItem1 = new MenuItem("Шоколадное молоко", 80, "Сладкий напиток для детей", "НАПИТОК");
+        MenuItem kidsItem2 = new MenuItem("Детский бургер", 120, "Мини-бургер с картошкой", "ОСНОВНОЕ");
+        MenuItem kidsItem3 = new MenuItem("Фруктовое мороженое", 60, "Натуральное фруктовое мороженое", "ДЕСЕРТ");
+
+        menuSystem.addMenuItemToMenu("Детское меню", kidsItem1);
+        menuSystem.addMenuItemToMenu("Детское меню", kidsItem2);
+        menuSystem.addMenuItemToMenu("Детское меню", kidsItem3);
+        menuSystem.displayMenu("Детское меню");
+
+        // Демонстрация с основным меню
+        System.out.println("\n=== ОСНОВНОЕ МЕНЮ ===");
+        MenuType mainMenu = new MainMenuType();
+        menuSystem.registerNewMenuType("Основное меню", mainMenu);
+
+        MenuItem mainItem1 = new MenuItem("Куриный суп", 90, "Ароматный куриный суп", "СУП");
+        MenuItem mainItem2 = new MenuItem("Салат Цезарь", 130, "Классический салат с курицей", "САЛАТ");
+        MenuItem mainItem3 = new MenuItem("Лосось на гриле", 280, "Лосось с лимоном и травами", "ОСНОВНОЕ");
+        MenuItem mainItem4 = new MenuItem("Веганская паста", 160, "Паста с овощами и соусом песто", "ОСНОВНОЕ");
+
+        menuSystem.addMenuItemToMenu("Основное меню", mainItem1);
+        menuSystem.addMenuItemToMenu("Основное меню", mainItem2);
+        menuSystem.addMenuItemToMenu("Основное меню", mainItem3);
+        menuSystem.addMenuItemToMenu("Основное меню", mainItem4);
+        menuSystem.displayMenu("Основное меню");
+    }
+}
+
+// Класс для элемента меню
+class MenuItem {
+    private String name;
+    private double price;
+    private String description;
+    private String type;
+
+    public MenuItem(String name, double price, String description, String type) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.type = type;
+    }
+
+    public String getName() { return name; }public double getPrice() { return price; }
+    public String getDescription() { return description; }
+    public String getType() { return type; }
+
+    @Override
+    public String toString() {
+        return name + " (" + price + " руб.)";
+    }
+}
+
+// Абстрактный класс для типа меню
+abstract class MenuType {
+    private String menuTypeName;
+
+    public MenuType(String menuTypeName) {
+        this.menuTypeName = menuTypeName;
+    }
+
+    public abstract boolean canAddItem(MenuItem item);
+    public String getMenuTypeName() { return menuTypeName; }
+}
+
+// Конкретная реализация меню Jarrows
+class JarrowsMenuType extends MenuType {
+    public JarrowsMenuType() {
+        super("Меню Jarrows");
+    }
+
+    @Override
+    public boolean canAddItem(MenuItem item) {
+        boolean allowed = ("ДЕСЕРТ".equals(item.getType()) || "МИКС".equals(item.getType()))
+                && item.getPrice() < 500;
+        if (!allowed) {
+            System.out.println("   ⚠️ Элемент '" + item.getName() + "' не соответствует правилам Меню Jarrows");
+            System.out.println("     (только ДЕСЕРТ/МИКС и цена < 500 руб)");
+        }
+        return allowed;
+    }
+}
+
+// Детское меню
+class KidsMenuType extends MenuType {
+    public KidsMenuType() {
+        super("Детское меню");
+    }
+
+    @Override
+    public boolean canAddItem(MenuItem item) {
+        boolean allowed = item.getPrice() < 100;
+        if (!allowed) {
+            System.out.println("   ⚠️ Элемент '" + item.getName() + "' слишком дорогой для Детского меню");
+            System.out.println("     (максимальная цена 100 руб)");
+        }
+        return allowed;
+    }
+}
+
+// Основное меню
+class MainMenuType extends MenuType {
+    public MainMenuType() {
+        super("Основное меню");
+    }
+
+    @Override
+    public boolean canAddItem(MenuItem item) {
+        boolean allowed = !"ДЕСЕРТ".equals(item.getType()) && item.getPrice() < 300;
+        if (!allowed) {
+            System.out.println("   ⚠️ Элемент '" + item.getName() + "' не подходит для Основного меню");
+            System.out.println("     (без десертов и цена < 300 руб)");
+        }
+        return allowed;
+    }
+}
+
+// Система управления меню
+class MenuSystem {
+    private Map<String, MenuType> menuTypes = new HashMap<>();
+    private Map<String, List<MenuItem>> menus = new HashMap<>();
+
+    public void registerNewMenuType(String name, MenuType menuType) {
+        menuTypes.put(name, menuType);
+        menus.put(name, new ArrayList<>());
+        System.out.println("✅ Зарегистрировано меню: " + name);
+    }
+
+    public void addMenuItemToMenu(String menuName, MenuItem item) {
+        if (!menuTypes.containsKey(menuName)) {
+            System.out.println("❌ Меню '" + menuName + "' не найдено");
+            return;
+        }
+
+        MenuType menuType = menuTypes.get(menuName);
+        if (menuType.canAddItem(item)) {
+            menus.get(menuName).add(item);
+            System.out.println("✅ Добавлено: " + item.getName() + " в меню: " + menuName);
+        }
+    }
+
+    public void displayMenu(String menuName) {
+        System.out.println("\n📋 " + menuName);
+        List<MenuItem> items = menus.get(menuName);
+        if (items != null && !items.isEmpty()) {
+            for (int i = 0; i < items.size(); i++) {
+                MenuItem item = items.get(i);
+                System.out.println("   " + (i + 1) + ". 🍽️ " + item.getName() +
+                        " (" + item.getType() + "): " + item.getPrice() + " руб." +
+                        " - " + item.getDescription());
             }
-        };
+            double total = items.stream().mapToDouble(MenuItem::getPrice).sum();
+            System.out.println("   💰 Общая стоимость: " + total + " руб.");
+        } else {
+            System.out.println("   🚫 Пустое меню");
+        }
+    }
 
-        cafeSystem.registerNewMenuType("KIDS", kidsMenu);
-
-        MenuItem kidsDessert = new Dessert("Мороженое", 150, "Ванильное мороженое");
-        MenuItem kidsJuice = new Drink("Яблочный сок", 120, "Натуральный сок");
-        MenuItem kidsCake = new Dessert("Кекс", 350, "Шоколадный кекс");
-        cafeSystem.addMenuItemToMenu("Детское меню", kidsDessert);
-        cafeSystem.addMenuItemToMenu("Детское меню", kidsJuice);
-        cafeSystem.addMenuItemToMenu("Детское меню", kidsCake);
-
-        System.out.println("\n=== ОБНОВЛЕННЫЕ МЕНЮ ===");
-        cafeSystem.displayAllMenus();
-
-        System.out.println("\n--- Детский заказ ---");
-        Order kidsOrder = cafeSystem.createNewOrder();
-        kidsOrder.addItem(kidsDessert, 2);
-        kidsOrder.addItem(kidsJuice, 1);
-        kidsOrder.displayOrder();
-
-        System.out.println("\n=== ВСЕ ЗАКАЗЫ СИСТЕМЫ ===");
-        cafeSystem.displayAllOrders();
+    public List<MenuItem> getMenuItems(String menuName) {
+        return menus.getOrDefault(menuName, new ArrayList<>());
     }
 }
